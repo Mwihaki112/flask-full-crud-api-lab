@@ -1,173 +1,120 @@
-# Module Lab: Building Full CRUD RESTful APIs with Flask
+# Events Manager (Flask REST API)
 
-## Learning Goals
+## Table of Contents
+- [Project Description](#project-description)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Setup Instructions](#setup-instuctions)
+- [How to Use](#how-to-use)
+- [API Endpoints](#api-endpoints)
+- [Folder Structure](#folder-structure)
+- [Future Improvements](#future-improvements)
+- [Author](#author)
 
-- Implement RESTful API endpoints using Flask.
-- Handle HTTP POST, PATCH, and DELETE methods to manage resource data.
-- Accept and process JSON input using `request.get_json()`.
-- Simulate persistent data using in-memory Python objects.
-- Follow RESTful route conventions and return structured JSON responses.
+## Project Description
+Events Manager is a simple RESTful API built with Python and Flask that allows users to manage event data.
+The application demonstrates core backend development concepts including RESTful routing, JSON handling, and full CRUD (Create, Read, Update, Delete) operations using in-memory storage.
+It focuses on building clean API structure, proper HTTP methods, and meaningful responses.
 
-## Introduction
+## Features
+- Add new events
+- View all events
+- Update event titles
+- Delete events
+- Input validation for required fields
+- Proper error handling with clear messages
+- RESTful API structure
 
-In this lab, you will build a **Full CRUD API** to manage a list of events. The API will allow users to:
+## Technologies Used
+Backend
+- Python 3
+- Flask
+- Pipenv (virtual environment & dependency management)
+- Flask JSON handling (jsonify)
+- Flask request handling (request.get_json())
 
-- Create new events using `POST`
-- Update existing events using `PATCH`
-- Delete events using `DELETE`
-
-You’ll simulate database-like behavior with in-memory Python class objects and respond to all client requests with properly formatted JSON and appropriate status codes.
-
-This lab reinforces essential backend development skills including route design, data mutation, error handling, and RESTful conventions.
+Concepts
+- REST API design
+- CRUD operations
+- HTTP methods (GET, POST, PATCH, DELETE)
+- In-memory data storage
 
 ## Setup Instructions
-
-### Fork and Clone the Repository
-
-1. Go to the provided GitHub repository link.
-2. Fork the repository to your GitHub account.
-3. Clone the forked repository to your local machine:
-
-```bash
-git clone <repo-url>
-cd course-8-module-5-flask-full-crud-api-lab
-```
-
-### Install Dependencies
-
-Ensure Python is installed:
-
-```bash
-python --version
-```
-
-Install Flask and dependencies using pipenv:
-
-```bash
+1. Clone the repository
+git clone https://github.com/Mwihaki112/flask-full-crud-api-lab.git
+cd flask-full-crud-api-lab
+2. Set up virtual environment using Pipenv
+pipenv --python 3
 pipenv install
+3. Activate the environment
 pipenv shell
-```
+4. Run the application
+python app.py
+The API will run on: http://127.0.0.1:5000
 
-Or with pip:
+## How to Use
+- Start the Flask server
+- Use the terminal(curl) or browser
+- Send requests to the API endpoints
+- View JSON responses
 
-```bash
-pip install flask
-```
+## API Endpoints
+Base Route
+GET / → Welcome message
 
-## Tasks
+Events Routes
+GET /events → Retrieve all events
+POST /events → Create a new event
+PATCH /events/<id> → Update event title
+DELETE /events/<id> → Delete an event
 
-### Task 1: Define the Problem
+## Example Requests & Responses
+- GET /events
+curl http://127.0.0.1:5000/events
 
-You’re building a basic event management API. It should:
-
-- Accept event creation via `POST /events`
-- Allow updating event titles via `PATCH /events/<id>`
-- Delete events using `DELETE /events/<id>`
-- Respond with structured JSON and appropriate HTTP status codes
-
----
-
-### Task 2: Determine the Design
-
-The Flask API should be structured as follows:
-
-- Use `@app.route()` with correct HTTP method decorators
-- Accept input using `request.get_json()`
-- Represent data using a custom `Event` class
-- Store events in an in-memory list
-- Use `jsonify()` for consistent JSON responses
-
----
-
-### Task 3: Develop the Code
-
-Create `app.py` and start with the following structure:
-
-```python
-from flask import Flask, jsonify, request
-
-app = Flask(__name__)
-
-# Event class
-class Event:
-    def __init__(self, id, title):
-        self.id = id
-        self.title = title
-
-    def to_dict(self):
-        return {"id": self.id, "title": self.title}
-
-# In-memory data store
-events = [
-    Event(1, "Tech Meetup"),
-    Event(2, "Python Workshop")
+json
+[
+  { "id": 1, "title": "Tech Meetup" },
+  { "id": 2, "title": "Python Workshop" }
 ]
 
-# TODO: POST /events - Create a new event from JSON input
-# TODO: PATCH /events/<id> - Update the title of an event
-# TODO: DELETE /events/<id> - Remove an event from the list
 
-if __name__ == "__main__":
-    app.run(debug=True)
-```
+- POST /events
+ curl -X POST http://127.0.0.1:5000/events -H "Content-Type: application/json" -d '{"title": "Hackathron"}'
+ json
+{ "id": 3, 
+  "title": "Hackathon" 
+}
 
----
 
-### Task 4: Test the API
+- PATCH /events/1
+curl -X PATCH http://127.0.0.1:5000/events/1 -H "Content-Type: application/json" -d '{"title": "Hackathron 2026"}'
 
-Start the Flask development server:
+json
+{ "id": 1, "title": "Hackathon 2026" }
 
-```bash
-python app.py
-```
 
-Test your endpoints using Postman or curl:
+- DELETE /events/2
+curl -X DELETE http://127.0.0.1:5000/events/2
 
-- `POST http://localhost:5000/events`
-  - Body: `{ "title": "Hackathon" }`
-- `PATCH http://localhost:5000/events/1`
-  - Body: `{ "title": "Hackathon 2025" }`
-- `DELETE http://localhost:5000/events/2`
+json
+{ "message": "Event 2 deleted successfully" }
 
----
+## Folder Structure
+flask-full-crud-api-lab/
+│
+├── app.py
+├── Pipfile
+├── Pipfile.lock
+└── README.md
 
-## Best Practices
+## Future Improvements
+- Add database integration (SQLite / PostgreSQL)
+- Add authentication (JWT)
+- Improve project structure using Flask Blueprints
+- Deploy API (Render / Railway / Vercel)
+- Add input validation library (Marshmallow / WTForms)
 
-- Use RESTful nouns in routes (e.g., `/events`)
-- Validate incoming JSON and handle missing keys gracefully
-- Use helper functions to reduce code repetition
-- Return:
-  - `201 Created` for successful POST
-  - `200 OK` or `204 No Content` for PATCH and DELETE
-  - `404 Not Found` if a resource doesn't exist
-- Include inline comments to explain logic
-
----
-
-## Considerations
-
-**1. Input Validation**
-- Ensure the `title` field is provided.
-- Return a `400 Bad Request` if missing.
-
-**2. Event Not Found**
-- Return `404 Not Found` with a clear message when the event ID doesn't exist.
-
-**3. Reusable Logic**
-- Consider writing a helper function to look up events by ID.
-
-**4. Scalability**
-- While using a single file works here, separate concerns into modules as your API grows.
-
----
-
-## Conclusion
-
-After completing this lab, you will:
-
-✅ Know how to handle incoming JSON with Flask  
-✅ Build routes that implement full CRUD behavior  
-✅ Simulate persistent resource changes in memory  
-✅ Return proper HTTP status codes and structured responses  
-
-This is a critical step in your backend developer journey. Next up: persistent databases!
+## Author
+Agnes Ng’anga
+GitHub: https://github.com/Mwihaki112⁠
